@@ -11,7 +11,8 @@ import {
   Building, 
   ChevronLeft,
   CheckCircle2,
-  Cpu
+  Cpu,
+  Check
 } from 'lucide-react';
 import { MOCK_GAMES } from '../data/mockGames';
 import { PageContainer } from '../components/layout/PageContainer';
@@ -19,17 +20,29 @@ import { GameCard } from '../components/game/GameCard';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { NotFoundPage } from './NotFoundPage';
+import { useStore } from '../context/StoreContext';
 
 export const GameDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [isWishlisted, setIsWishlisted] = useState(false);
-  const [isAddedToCart, setIsAddedToCart] = useState(false);
+  const { addToCart, isInCart, toggleWishlist, isInWishlist } = useStore();
 
   const game = MOCK_GAMES.find((g) => g.id === id || g.slug === id) || MOCK_GAMES[0];
+  const [selectedPlatform, setSelectedPlatform] = useState<string>(game.platforms[0] || 'PC');
 
   if (!game) {
     return <NotFoundPage />;
   }
+
+  const isWishlisted = isInWishlist(game.id);
+  const isAddedToCart = isInCart(game.id);
+
+  const handleAddToCart = () => {
+    addToCart(game, selectedPlatform);
+  };
+
+  const handleWishlist = () => {
+    toggleWishlist(game);
+  };
 
   const similarGames = MOCK_GAMES.filter((g) => g.id !== game.id).slice(0, 4);
 
@@ -108,11 +121,32 @@ export const GameDetailsPage: React.FC = () => {
               </div>
 
               {/* Purchase Card */}
-              <div className="bg-dark-card/90 border border-dark-border p-6 rounded-2xl backdrop-blur-md shadow-xl space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="bg-dark-card/90 border border-dark-border p-6 rounded-2xl backdrop-blur-md shadow-xl space-y-5">
+                <div className="space-y-2">
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    Select Target Platform
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {game.platforms.map((plat) => (
+                      <button
+                        key={plat}
+                        onClick={() => setSelectedPlatform(plat)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                          selectedPlatform === plat
+                            ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
+                            : 'bg-dark-surface border border-dark-border text-slate-300 hover:text-white'
+                        }`}
+                      >
+                        {plat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
                   <div>
                     <span className="text-xs uppercase font-bold text-slate-400 block">
-                      Digital Key Price
+                      Digital Activation Price
                     </span>
                     <div className="flex items-baseline gap-3 mt-1">
                       <span className="text-3xl sm:text-4xl font-black text-white">
@@ -131,19 +165,19 @@ export const GameDetailsPage: React.FC = () => {
                     <Button
                       variant={isAddedToCart ? 'secondary' : 'primary'}
                       size="lg"
-                      onClick={() => setIsAddedToCart(!isAddedToCart)}
-                      leftIcon={<ShoppingCart className="w-5 h-5" />}
+                      onClick={handleAddToCart}
+                      leftIcon={isAddedToCart ? <Check className="w-5 h-5 text-emerald-400" /> : <ShoppingCart className="w-5 h-5" />}
                     >
-                      {isAddedToCart ? 'Added to Cart' : 'Add to Cart'}
+                      {isAddedToCart ? 'Add Another Copy' : 'Add to Cart'}
                     </Button>
 
                     <Button
                       variant={isWishlisted ? 'danger' : 'outline'}
                       size="lg"
-                      onClick={() => setIsWishlisted(!isWishlisted)}
+                      onClick={handleWishlist}
                       leftIcon={<Heart className={`w-5 h-5 ${isWishlisted ? 'fill-current' : ''}`} />}
                     >
-                      {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+                      {isWishlisted ? 'In Wishlist' : 'Add to Wishlist'}
                     </Button>
                   </div>
                 </div>
@@ -160,7 +194,7 @@ export const GameDetailsPage: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Gamepad className="w-4 h-4 text-cyan-400 shrink-0" />
-                    <span>Play on {game.platforms.join(', ')}</span>
+                    <span>{selectedPlatform} Activation Code</span>
                   </div>
                 </div>
               </div>
@@ -196,6 +230,24 @@ export const GameDetailsPage: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* Screenshots Gallery */}
+            {game.screenshots && game.screenshots.length > 0 && (
+              <div className="bg-dark-card border border-dark-border rounded-xl p-6 sm:p-8 space-y-4">
+                <h3 className="text-xl font-bold text-white">Screenshots & Gameplay</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                  {game.screenshots.map((s, idx) => (
+                    <div key={idx} className="rounded-xl overflow-hidden border border-dark-border aspect-video group">
+                      <img
+                        src={s}
+                        alt={`${game.title} preview ${idx + 1}`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* System Requirements */}
             <div className="bg-dark-card border border-dark-border rounded-xl p-6 sm:p-8 space-y-4">

@@ -12,10 +12,15 @@ import { Logo } from '../common/Logo';
 import { SearchBar } from '../common/SearchBar';
 import { IconButton } from '../ui/IconButton';
 import { Badge } from '../ui/Badge';
+import { useStore } from '../../context/StoreContext';
 
 export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { cart, wishlist, user } = useStore();
+
+  const totalCartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const totalWishlistCount = wishlist.length;
 
   const navLinks = [
     { label: 'Home', path: '/' },
@@ -70,14 +75,14 @@ export const Header: React.FC = () => {
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Wishlist Link */}
             <Link to="/wishlist" aria-label="View Wishlist">
-              <IconButton label="Wishlist" badge="3">
+              <IconButton label="Wishlist" badge={totalWishlistCount > 0 ? String(totalWishlistCount) : undefined}>
                 <Heart className="w-4 h-4 text-slate-300 hover:text-rose-400 transition-colors" />
               </IconButton>
             </Link>
 
             {/* Cart Link */}
             <Link to="/cart" aria-label="View Cart">
-              <IconButton label="Cart" badge="2">
+              <IconButton label="Cart" badge={totalCartCount > 0 ? String(totalCartCount) : undefined}>
                 <ShoppingCart className="w-4 h-4 text-slate-300 hover:text-brand-400 transition-colors" />
               </IconButton>
             </Link>
@@ -91,7 +96,7 @@ export const Header: React.FC = () => {
                 <div className="w-6 h-6 rounded-full bg-brand-600/30 border border-brand-500/50 flex items-center justify-center text-brand-300">
                   <User className="w-3.5 h-3.5" />
                 </div>
-                <span>Profile</span>
+                <span className="truncate max-w-[100px]">{user.name}</span>
               </Link>
             </div>
 
@@ -189,10 +194,10 @@ export const Header: React.FC = () => {
 
           <div className="pt-3 border-t border-dark-border flex items-center justify-around text-xs text-slate-400">
             <Link to="/wishlist" onClick={closeMobileMenu} className="hover:text-white flex items-center gap-1">
-              <Heart className="w-4 h-4 text-rose-400" /> Wishlist (3)
+              <Heart className="w-4 h-4 text-rose-400" /> Wishlist ({totalWishlistCount})
             </Link>
             <Link to="/cart" onClick={closeMobileMenu} className="hover:text-white flex items-center gap-1">
-              <ShoppingCart className="w-4 h-4 text-brand-400" /> Cart (2)
+              <ShoppingCart className="w-4 h-4 text-brand-400" /> Cart ({totalCartCount})
             </Link>
             <Link to="/profile" onClick={closeMobileMenu} className="hover:text-white flex items-center gap-1">
               <User className="w-4 h-4 text-cyan-400" /> Account

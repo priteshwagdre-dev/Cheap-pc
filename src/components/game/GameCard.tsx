@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingCart, Star, Monitor, Gamepad } from 'lucide-react';
+import { Heart, ShoppingCart, Star, Monitor, Gamepad, Check } from 'lucide-react';
 import type { Game } from '../../types';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
+import { useStore } from '../../context/StoreContext';
 
 export interface GameCardProps {
   game: Game;
@@ -14,21 +15,22 @@ export interface GameCardProps {
 export const GameCard: React.FC<GameCardProps> = ({
   game,
   variant = 'standard',
-  className = ''
+  className = '',
 }) => {
-  const [isWishlisted, setIsWishlisted] = useState(false);
-  const [isAddedToCart, setIsAddedToCart] = useState(false);
+  const { isInCart, addToCart, isInWishlist, toggleWishlist } = useStore();
+  const isWishlisted = isInWishlist(game.id);
+  const isAddedToCart = isInCart(game.id);
 
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsWishlisted(!isWishlisted);
+    toggleWishlist(game);
   };
 
   const handleCartClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsAddedToCart(!isAddedToCart);
+    addToCart(game, game.platforms[0] || 'PC');
   };
 
   const formatPrice = (val: number) => {
@@ -66,14 +68,15 @@ export const GameCard: React.FC<GameCardProps> = ({
               <button
                 type="button"
                 onClick={handleWishlistClick}
-                aria-label="Wishlist game"
+                aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                title={isWishlisted ? 'In Wishlist' : 'Add to Wishlist'}
                 className={`p-2 rounded-lg transition-colors border ${
                   isWishlisted
                     ? 'bg-rose-500/20 text-rose-400 border-rose-500/40'
                     : 'bg-dark-surface text-slate-400 hover:text-white border-dark-border'
                 }`}
               >
-                <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
+                <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current text-rose-400' : ''}`} />
               </button>
             </div>
 
@@ -108,7 +111,8 @@ export const GameCard: React.FC<GameCardProps> = ({
                 variant={isAddedToCart ? 'secondary' : 'primary'}
                 size="sm"
                 onClick={handleCartClick}
-                leftIcon={<ShoppingCart className="w-3.5 h-3.5" />}
+                leftIcon={isAddedToCart ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <ShoppingCart className="w-3.5 h-3.5" />}
+                className={isAddedToCart ? 'border-emerald-500/40 text-emerald-300' : ''}
               >
                 {isAddedToCart ? 'In Cart' : 'Add to Cart'}
               </Button>
@@ -216,10 +220,10 @@ export const GameCard: React.FC<GameCardProps> = ({
               variant={isAddedToCart ? 'secondary' : 'primary'}
               size="sm"
               onClick={handleCartClick}
-              leftIcon={<ShoppingCart className="w-3.5 h-3.5" />}
+              leftIcon={isAddedToCart ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <ShoppingCart className="w-3.5 h-3.5" />}
               className={isAddedToCart ? 'border-emerald-500/40 text-emerald-300' : ''}
             >
-              {isAddedToCart ? 'Added' : 'Add'}
+              {isAddedToCart ? 'In Cart' : 'Add'}
             </Button>
           </div>
         </div>
