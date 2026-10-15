@@ -25,6 +25,9 @@ export interface Game {
   isPreOrder?: boolean;
   isDeal?: boolean;
   isBundle?: boolean;
+  isTrending?: boolean;
+  isBestSeller?: boolean;
+  videoUrl?: string;
   bundleItems?: string[];
   systemRequirements?: {
     os: string;

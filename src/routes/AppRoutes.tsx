@@ -4,6 +4,7 @@ import { Layout } from '../components/layout/Layout';
 import { useScrollToTop } from '../hooks/useScrollToTop';
 import {
   HomePage,
+  DiscoverPage,
   GamesPage,
   GameDetailsPage,
   CategoriesPage,
@@ -26,6 +27,7 @@ export const AppRoutes: React.FC = () => {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
+        <Route path="/discover" element={<DiscoverPage />} />
         <Route path="/games" element={<GamesPage />} />
         <Route path="/games/:id" element={<GameDetailsPage />} />
         <Route path="/categories" element={<CategoriesPage />} />

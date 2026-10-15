@@ -5,8 +5,28 @@ import { MOCK_GAMES } from '../data/mockGames';
 import { CATEGORIES } from '../data/categories';
 import { GameCard } from '../components/game/GameCard';
 import { PageContainer } from '../components/layout/PageContainer';
-import { Badge } from '../components/ui/Badge';
 import { EmptyState } from '../components/ui/EmptyState';
+
+// Module-level mappings and lists
+const CATEGORY_MAPPING: Record<string, string> = {
+  'action': 'Action',
+  'adventure': 'Adventure',
+  'rpg': 'RPG',
+  'racing': 'Racing',
+  'sports': 'Sports',
+  'horror': 'Horror',
+  'strategy': 'Strategy',
+  'indie': 'Indie',
+  'action-rpg': 'Action',
+  'cyberpunk-scifi': 'Action',
+  'open-world': 'Adventure',
+  'souls-like': 'RPG',
+  'shooters': 'Action',
+  'survival-horror': 'Horror',
+  'indie-roguelike': 'Indie'
+};
+
+const PLATFORMS = ['all', 'PC', 'PS5', 'Xbox Series X/S', 'Nintendo Switch'];
 
 export const GamesPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,20 +37,6 @@ export const GamesPage: React.FC = () => {
   const sortBy = searchParams.get('sort') || 'featured';
   const maxPriceParam = searchParams.get('maxPrice');
   const maxPrice = maxPriceParam ? Number(maxPriceParam) : 100;
-
-  // Category mapping
-  const categoryMapping: Record<string, string> = {
-    'action-rpg': 'Action RPG',
-    'cyberpunk-scifi': 'Cyberpunk',
-    'open-world': 'Open World',
-    'souls-like': 'Souls-like',
-    'shooters': 'Multiplayer',
-    'survival-horror': 'Survival',
-    'racing': 'Racing',
-    'indie-roguelike': 'Sci-Fi'
-  };
-
-  const platforms = ['all', 'PC', 'PS5', 'Xbox Series X/S', 'Nintendo Switch'];
 
   // Helper to update individual URL query params
   const updateParam = (key: string, val: string) => {
@@ -60,7 +66,7 @@ export const GamesPage: React.FC = () => {
 
       // 2. Category / Genre
       if (categorySlug !== 'all') {
-        const mappedGenre = categoryMapping[categorySlug] || categorySlug;
+        const mappedGenre = CATEGORY_MAPPING[categorySlug] || categorySlug;
         const matchesGenre = game.genre.some(
           (g) => g.toLowerCase().includes(mappedGenre.toLowerCase()) || g.toLowerCase() === categorySlug.toLowerCase()
         );
@@ -82,9 +88,11 @@ export const GamesPage: React.FC = () => {
 
       return true;
     }).sort((a, b) => {
+      if (sortBy === 'newest') return b.releaseDate.localeCompare(a.releaseDate);
       if (sortBy === 'price-low') return a.price - b.price;
       if (sortBy === 'price-high') return b.price - a.price;
-      if (sortBy === 'rating' || sortBy === 'popular') return b.rating - a.rating;
+      if (sortBy === 'popular') return b.ratingCount - a.ratingCount;
+      if (sortBy === 'rating') return b.rating - a.rating;
       if (sortBy === 'discount') return b.discountPercent - a.discountPercent;
       return 0;
     });
@@ -97,24 +105,28 @@ export const GamesPage: React.FC = () => {
     (maxPrice < 100 ? 1 : 0);
 
   return (
-    <PageContainer>
-      {/* Header */}
-      <div className="mb-8 space-y-2">
-        <div className="flex items-center gap-2">
-          <Badge variant="brand">Full Catalog</Badge>
-          <span className="text-xs text-slate-400">• {filteredGames.length} Games Available</span>
-          {searchQuery && (
-            <Badge variant="cyan">Search: &ldquo;{searchQuery}&rdquo;</Badge>
-          )}
+    <PageContainer className="space-y-8 pb-20 select-none">
+      {/* Header Banner */}
+      <div className="hud-bracket-container relative rounded-2xl overflow-hidden border border-cyber-cyan/40 bg-gradient-to-r from-dark-obsidian via-[#071324] to-dark-obsidian p-6 sm:p-10 shadow-[0_0_35px_rgba(0,240,255,0.2)]">
+        <div className="max-w-2xl space-y-3 relative z-10">
+          <div className="flex items-center gap-2 font-mono text-xs text-cyber-cyan">
+            <span className="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse" />
+            <span>GLOBAL ARCHIVE // {filteredGames.length} GAMES ONLINE</span>
+            {searchQuery && (
+              <span className="text-cyber-amber">• QUERY: &ldquo;{searchQuery}&rdquo;</span>
+            )}
+          </div>
+          <h1 className="font-syne text-3xl sm:text-5xl font-black text-white tracking-widest2 uppercase">
+            DIGITAL GAMES VAULT
+          </h1>
+          <p className="text-sm text-cyber-silver leading-relaxed font-sans">
+            Explore genuine PC and console digital activation codes. Filter by category, platform, budget, or discounts.
+          </p>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white">Digital Games Vault</h1>
-        <p className="text-sm text-slate-400 max-w-2xl">
-          Explore genuine PC and console digital activation codes. Filter by category, platform, budget, or discounts.
-        </p>
       </div>
 
       {/* Filter and Control Bar */}
-      <div className="bg-dark-card border border-dark-border rounded-xl p-4 sm:p-5 mb-8 space-y-4 shadow-sm">
+      <div className="hud-bracket-container bg-dark-obsidian/90 border border-white/10 rounded-2xl p-4 sm:p-5 space-y-4 shadow-hud backdrop-blur-xl">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           {/* Genre / Category Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
@@ -158,7 +170,9 @@ export const GamesPage: React.FC = () => {
               className="bg-dark-surface border border-dark-border rounded-lg text-xs font-semibold text-slate-200 px-3 py-1.5 focus:outline-none focus:border-brand-500"
             >
               <option value="featured">Featured First</option>
-              <option value="popular">Highest Rated / Popular</option>
+              <option value="newest">Newest Arrivals</option>
+              <option value="popular">Most Popular</option>
+              <option value="rating">Highest Rated</option>
               <option value="discount">Biggest Discount</option>
               <option value="price-low">Price: Low to High</option>
               <option value="price-high">Price: High to Low</option>
@@ -172,7 +186,7 @@ export const GamesPage: React.FC = () => {
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 shrink-0 mr-1 flex items-center gap-1">
               <SlidersHorizontal className="w-3.5 h-3.5" /> Platform:
             </span>
-            {platforms.map((p) => (
+            {PLATFORMS.map((p) => (
               <button
                 key={p}
                 onClick={() => updateParam('platform', p)}

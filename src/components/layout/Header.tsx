@@ -6,12 +6,12 @@ import {
   User, 
   Menu, 
   X, 
-  Flame
+  Flame,
+  ArrowRight
 } from 'lucide-react';
 import { Logo } from '../common/Logo';
 import { SearchBar } from '../common/SearchBar';
-import { IconButton } from '../ui/IconButton';
-import { Badge } from '../ui/Badge';
+import { GlowButton } from '../ui/GlowButton';
 import { useStore } from '../../context/StoreContext';
 
 export const Header: React.FC = () => {
@@ -23,184 +23,200 @@ export const Header: React.FC = () => {
   const totalWishlistCount = wishlist.length;
 
   const navLinks = [
-    { label: 'Home', path: '/' },
-    { label: 'Games', path: '/games' },
-    { label: 'Categories', path: '/categories' },
-    { label: 'New Releases', path: '/new-releases', badge: 'New' },
-    { label: 'Pre-Orders', path: '/pre-orders' },
-    { label: 'Bundles', path: '/bundles' },
-    { label: 'Deals', path: '/deals', badge: 'Hot', badgeVariant: 'discount' as const },
+    { label: 'HOME', path: '/' },
+    { label: 'DISCOVER', path: '/discover', badge: 'PORTAL' },
+    { label: 'GAMES', path: '/games' },
+    { label: 'CATEGORIES', path: '/categories' },
+    { label: 'BUNDLES', path: '/bundles', badge: '-65%' },
+    { label: 'PRE-ORDERS', path: '/pre-orders' },
+    { label: 'DEALS', path: '/deals', badge: 'HOT' },
   ];
 
-  const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
-  };
-
   return (
-    <header className="sticky top-0 z-50 w-full bg-dark-base/90 backdrop-blur-xl border-b border-dark-border/80 transition-all duration-200">
-      {/* Top Banner Notice (Deals / Free Shipping / Digital keys) */}
-      <div className="bg-gradient-to-r from-brand-900/50 via-dark-surface to-brand-900/50 border-b border-white/5 py-1 px-4 text-center text-xs text-slate-300 hidden md:block">
+    <header className="fixed top-0 left-0 right-0 z-50 select-none">
+      {/* Top Transmission Status Bar */}
+      <div className="bg-[#050508]/95 border-b border-white/5 py-1 px-4 text-center font-mono text-[10px] text-slate-400 hidden lg:block backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <span className="flex items-center gap-1.5 text-slate-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            Instant Digital Key Delivery & 24/7 Automated Redemptions
-          </span>
-          <div className="flex items-center gap-4 text-slate-400">
-            <Link to="/deals" className="hover:text-amber-400 transition-colors flex items-center gap-1 font-medium">
-              <Flame className="w-3.5 h-3.5 text-amber-500" />
-              Weekend Flash Sale: Up to 80% Off
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyber-cyan animate-pulse" />
+            <span className="text-cyber-cyan font-bold">NEXUS PROTOCOL v4.2</span>
+            <span className="text-white/20">|</span>
+            <span>INSTANT AUTOMATED KEY DELIVERY SYSTEM // 24/7 ONLINE</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link to="/deals" className="hover:text-cyber-amber text-slate-300 transition-colors flex items-center gap-1">
+              <Flame className="w-3 h-3 text-cyber-amber" />
+              WEEKEND FLASH CLEARANCE: UP TO 80% OFF
             </Link>
-            <span className="text-dark-border">|</span>
-            <Link to="/profile" className="hover:text-white transition-colors">
-              Support Center
-            </Link>
+            <span className="text-white/20">|</span>
+            <span className="text-slate-500">SYS_ENCRYPTION: ACTIVE</span>
           </div>
         </div>
       </div>
 
-      {/* Main Header Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-18 py-3 gap-4">
-          {/* Brand Logo */}
-          <div className="shrink-0">
+      {/* Floating HUD Main Container */}
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mt-1 sm:mt-2">
+        <div className="relative rounded-2xl bg-dark-obsidian/75 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
+          {/* Subtle Glowing Bottom Accent Line */}
+          <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-cyber-cyan/50 to-transparent pointer-events-none" />
+
+          {/* LEFT: Brand Logo */}
+          <div className="shrink-0 flex items-center gap-3">
             <Logo size="md" />
           </div>
 
-          {/* Search Bar (Center / Desktop) */}
-          <div className="hidden lg:flex flex-1 max-w-md mx-4">
-            <SearchBar placeholder="Search 5,000+ PC & console games, keys..." />
-          </div>
-
-          {/* Desktop Right Action Icons */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Wishlist Link */}
-            <Link to="/wishlist" aria-label="View Wishlist">
-              <IconButton label="Wishlist" badge={totalWishlistCount > 0 ? String(totalWishlistCount) : undefined}>
-                <Heart className="w-4 h-4 text-slate-300 hover:text-rose-400 transition-colors" />
-              </IconButton>
-            </Link>
-
-            {/* Cart Link */}
-            <Link to="/cart" aria-label="View Cart">
-              <IconButton label="Cart" badge={totalCartCount > 0 ? String(totalCartCount) : undefined}>
-                <ShoppingCart className="w-4 h-4 text-slate-300 hover:text-brand-400 transition-colors" />
-              </IconButton>
-            </Link>
-
-            {/* User Profile / Auth */}
-            <div className="hidden sm:flex items-center pl-2 border-l border-dark-border">
-              <Link
-                to="/profile"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-dark-card hover:bg-dark-card-hover border border-dark-border hover:border-dark-border-light text-slate-200 transition-all text-xs font-semibold"
-              >
-                <div className="w-6 h-6 rounded-full bg-brand-600/30 border border-brand-500/50 flex items-center justify-center text-brand-300">
-                  <User className="w-3.5 h-3.5" />
-                </div>
-                <span className="truncate max-w-[100px]">{user.name}</span>
-              </Link>
-            </div>
-
-            {/* Mobile Menu Hamburger Toggle */}
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-dark-card border border-dark-border transition-colors"
-              aria-label="Toggle navigation menu"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Desktop Navigation Links Strip */}
-        <nav className="hidden lg:flex items-center space-x-1 border-t border-dark-border/50 py-2.5">
-          {navLinks.map((item) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={`relative px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 flex items-center gap-1.5 ${
-                  isActive
-                    ? 'text-white bg-brand-600/20 text-brand-300 border border-brand-500/30'
-                    : 'text-slate-300 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <span>{item.label}</span>
-                {item.badge && (
-                  <Badge
-                    variant={item.badgeVariant || 'brand'}
-                    size="sm"
-                    className="ml-1 scale-90"
-                  >
-                    {item.badge}
-                  </Badge>
-                )}
-              </NavLink>
-            );
-          })}
-        </nav>
-      </div>
-
-      {/* Mobile Search Bar Row (shown on small devices) */}
-      <div className="lg:hidden px-4 pb-3 pt-1 border-t border-dark-border/40">
-        <SearchBar variant="compact" placeholder="Search games, keys, bundles..." />
-      </div>
-
-      {/* Mobile Drawer Navigation */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-dark-border bg-dark-base/98 backdrop-blur-2xl px-4 py-4 space-y-2 shadow-2xl">
-          <div className="grid grid-cols-2 gap-2 mb-3">
-            <Link
-              to="/login"
-              onClick={closeMobileMenu}
-              className="text-center py-2 px-3 rounded-lg bg-dark-card border border-dark-border text-xs font-semibold text-slate-200"
-            >
-              Log In
-            </Link>
-            <Link
-              to="/register"
-              onClick={closeMobileMenu}
-              className="text-center py-2 px-3 rounded-lg bg-brand-600 hover:bg-brand-500 text-xs font-semibold text-white shadow-md shadow-brand-600/30"
-            >
-              Register
-            </Link>
-          </div>
-
-          <div className="space-y-1">
+          {/* CENTER: Primary Navigation Links with Animated Glowing Underlines */}
+          <nav className="hidden lg:flex items-center space-x-1">
             {navLinks.map((item) => {
               const isActive = location.pathname === item.path;
               return (
-                <Link
+                <NavLink
                   key={item.path}
                   to={item.path}
-                  onClick={closeMobileMenu}
-                  className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                  className={`group relative px-3 py-1.5 font-mono text-xs font-bold tracking-wider transition-colors duration-200 flex items-center gap-1.5 ${
                     isActive
-                      ? 'bg-brand-600/20 text-brand-300 border border-brand-500/30'
-                      : 'text-slate-300 hover:text-white hover:bg-dark-card'
+                      ? 'text-cyber-cyan'
+                      : 'text-slate-300 hover:text-white'
                   }`}
                 >
                   <span>{item.label}</span>
                   {item.badge && (
-                    <Badge variant={item.badgeVariant || 'brand'} size="sm">
+                    <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-black uppercase bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/30">
                       {item.badge}
-                    </Badge>
+                    </span>
                   )}
-                </Link>
+                  {/* Glowing Animated Hover Underline */}
+                  <span
+                    className={`absolute bottom-0 left-2 right-2 h-[2px] bg-cyber-cyan shadow-[0_0_8px_#00F0FF] transition-transform duration-300 origin-center ${
+                      isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                    }`}
+                  />
+                </NavLink>
               );
             })}
+          </nav>
+
+          {/* RIGHT: Action CTAs, Search, Wishlist, Cart */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Desktop Search Toggle */}
+            <div className="hidden xl:block w-48">
+              <SearchBar variant="compact" placeholder="Search keys..." />
+            </div>
+
+            {/* Wishlist Link */}
+            <Link
+              to="/wishlist"
+              className="relative p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-cyber-cyan/40 text-slate-300 hover:text-white transition-all"
+              aria-label="Wishlist"
+            >
+              <Heart className="w-4 h-4 hover:text-rose-400 transition-colors" />
+              {totalWishlistCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-rose-500 font-mono text-[9px] font-bold text-white flex items-center justify-center shadow-[0_0_8px_#f43f5e]">
+                  {totalWishlistCount}
+                </span>
+              )}
+            </Link>
+
+            {/* Cart Link */}
+            <Link
+              to="/cart"
+              className="relative p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-cyber-cyan/40 text-slate-300 hover:text-white transition-all"
+              aria-label="Shopping Cart"
+            >
+              <ShoppingCart className="w-4 h-4 hover:text-cyber-cyan transition-colors" />
+              {totalCartCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-cyber-cyan font-mono text-[9px] font-bold text-black flex items-center justify-center shadow-[0_0_8px_#00F0FF]">
+                  {totalCartCount}
+                </span>
+              )}
+            </Link>
+
+            {/* High-Contrast Sign-In / User Profile CTA Button */}
+            <Link to="/profile" className="hidden sm:inline-block">
+              <GlowButton variant="cyan" size="sm" leftIcon={<User className="w-3.5 h-3.5" />}>
+                {user.name.split(' ')[0]} // ID
+              </GlowButton>
+            </Link>
+
+            {/* Mobile Hamburger Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="lg:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-slate-200 hover:text-white"
+              aria-label="Open mobile menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Search Row if screen < xl */}
+      <div className="xl:hidden px-4 pt-1 pb-1 max-w-md mx-auto">
+        <SearchBar variant="compact" placeholder="Search 5,000+ digital keys..." />
+      </div>
+
+      {/* Full-Screen Techfest Mobile Overlay Menu */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-[100] bg-dark-void/98 backdrop-blur-2xl flex flex-col justify-between p-6 sm:p-10 select-none overflow-y-auto">
+          {/* Header row in mobile overlay */}
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <Logo size="md" />
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-2.5 rounded-full bg-white/10 border border-white/20 text-white hover:bg-cyber-cyan hover:text-black transition-all"
+              aria-label="Close menu"
+            >
+              <X className="w-6 h-6" />
+            </button>
           </div>
 
-          <div className="pt-3 border-t border-dark-border flex items-center justify-around text-xs text-slate-400">
-            <Link to="/wishlist" onClick={closeMobileMenu} className="hover:text-white flex items-center gap-1">
-              <Heart className="w-4 h-4 text-rose-400" /> Wishlist ({totalWishlistCount})
-            </Link>
-            <Link to="/cart" onClick={closeMobileMenu} className="hover:text-white flex items-center gap-1">
-              <ShoppingCart className="w-4 h-4 text-brand-400" /> Cart ({totalCartCount})
-            </Link>
-            <Link to="/profile" onClick={closeMobileMenu} className="hover:text-white flex items-center gap-1">
-              <User className="w-4 h-4 text-cyan-400" /> Account
+          {/* Giant Sci-Fi Nav Links */}
+          <div className="py-8 space-y-4">
+            <div className="font-mono text-xs uppercase tracking-widest text-cyber-cyan mb-3">
+              // SELECT DESTINATION PORTAL
+            </div>
+            {navLinks.map((item, idx) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setMobileMenuOpen(false)}
+                className="group flex items-center justify-between font-syne text-2xl sm:text-3xl font-black uppercase tracking-widest text-white hover:text-cyber-cyan transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-xs text-slate-500 group-hover:text-cyber-cyan">
+                    0{idx + 1} //
+                  </span>
+                  <span>{item.label}</span>
+                </div>
+                <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all text-cyber-cyan" />
+              </Link>
+            ))}
+          </div>
+
+          {/* Quick Account Actions */}
+          <div className="pt-6 border-t border-white/10 space-y-3 font-mono text-xs">
+            <div className="grid grid-cols-2 gap-3">
+              <Link
+                to="/cart"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-3 rounded-xl bg-dark-obsidian border border-cyber-cyan/30 text-center font-bold text-cyber-cyan"
+              >
+                CART ({totalCartCount})
+              </Link>
+              <Link
+                to="/wishlist"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-3 rounded-xl bg-dark-obsidian border border-rose-500/30 text-center font-bold text-rose-400"
+              >
+                WISHLIST ({totalWishlistCount})
+              </Link>
+            </div>
+            <Link
+              to="/profile"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block w-full py-3 text-center rounded-xl bg-gradient-to-r from-cyber-cyan to-cyber-violet font-black text-black uppercase tracking-wider"
+            >
+              ACCESS PILOT PROFILE
             </Link>
           </div>
         </div>

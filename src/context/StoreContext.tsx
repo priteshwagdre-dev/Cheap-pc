@@ -28,6 +28,12 @@ interface StoreContextType {
   user: UserProfile;
   updateUser: (updates: Partial<UserProfile>) => void;
 
+  recentlyViewed: Game[];
+  addToRecentlyViewed: (game: Game) => void;
+
+  quickViewGame: Game | null;
+  setQuickViewGame: (game: Game | null) => void;
+
   toasts: Toast[];
   addToast: (message: string, type?: 'success' | 'info' | 'warning') => void;
   removeToast: (id: string) => void;
@@ -41,6 +47,7 @@ const STORAGE_KEYS = {
   ORDERS: 'cheap_games_orders_v1',
   KEYS: 'cheap_games_keys_v1',
   USER: 'cheap_games_user_v1',
+  RECENT: 'cheap_games_recent_v1',
 };
 
 // Key generation helper
@@ -175,7 +182,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const addToast = (message: string, type: 'success' | 'info' | 'warning' = 'success') => {
-    const id = Math.random().toString(36).substring(2, 9);
+    const id = `${Date.now()}-${Math.floor(Date.now() * 0.1) % 100000}`;
     setToasts((prev) => [...prev, { id, message, type }]);
     setTimeout(() => {
       removeToast(id);
@@ -185,6 +192,32 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const removeToast = (id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
+
+  // 6. Recently Viewed Games
+  const [recentlyViewed, setRecentlyViewed] = useState<Game[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.RECENT);
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // ignore
+    }
+    return [MOCK_GAMES[0], MOCK_GAMES[1], MOCK_GAMES[2]];
+  });
+
+  const addToRecentlyViewed = (game: Game) => {
+    setRecentlyViewed((prev) => {
+      const next = [game, ...prev.filter((g) => g.id !== game.id)].slice(0, 8);
+      try {
+        localStorage.setItem(STORAGE_KEYS.RECENT, JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  };
+
+  // 7. Quick View Modal Game
+  const [quickViewGame, setQuickViewGame] = useState<Game | null>(null);
 
   // Sync to localStorage
   useEffect(() => {
@@ -367,6 +400,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         toasts,
         addToast,
         removeToast,
+        recentlyViewed,
+        addToRecentlyViewed,
+        quickViewGame,
+        setQuickViewGame,
       }}
     >
       {children}

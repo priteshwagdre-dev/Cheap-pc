@@ -1,4 +1,5 @@
 export * from './HomePage';
+export * from './DiscoverPage';
 export * from './GamesPage';
 export * from './GameDetailsPage';
 export * from './CategoriesPage';

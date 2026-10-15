@@ -65,6 +65,10 @@ export const CartPage: React.FC = () => {
       setAppliedPromo({ code, percent: 10, fixed: 0 });
       addToast('Promo code applied: 10% Extra Discount!');
       setPromoInput('');
+    } else if (code === 'TECHFEST15' || code === 'TECHFEST') {
+      setAppliedPromo({ code, percent: 15, fixed: 0 });
+      addToast('Techfest VIP Promo applied: 15% Extra Discount!');
+      setPromoInput('');
     } else if (code === 'NEXUS20') {
       setAppliedPromo({ code, percent: 20, fixed: 0 });
       addToast('VIP Promo code applied: 20% Extra Discount!');
@@ -74,7 +78,7 @@ export const CartPage: React.FC = () => {
       addToast('Coupon applied: $5 Off your order!');
       setPromoInput('');
     } else {
-      setPromoError('Invalid coupon code. Try "CHEAP10" or "NEXUS20".');
+      setPromoError('Invalid coupon code. Try "TECHFEST15", "CHEAP10", or "NEXUS20".');
     }
   };
 

@@ -33,11 +33,11 @@ export const Logo: React.FC<LogoProps> = ({ className = '', size = 'md' }) => {
         </div>
       </div>
       <div className="flex flex-col">
-        <span className={`font-display font-black tracking-wider leading-none text-white ${textSizes[size]}`}>
-          NEXUS<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-400">PLAY</span>
+        <span className={`font-tech font-black tracking-wider leading-none text-white ${textSizes[size]}`}>
+          NEXUS<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-cyan-400 to-neon-orange">PLAY</span>
         </span>
-        <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 leading-tight">
-          Game Vault
+        <span className="text-[10px] uppercase font-bold tracking-widest text-cyan-400 leading-tight">
+          Digital Key Vault
         </span>
       </div>
     </Link>

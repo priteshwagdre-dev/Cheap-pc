@@ -1,44 +1,64 @@
-import React from 'react';
-import { Gift } from 'lucide-react';
+import { Gift, Clock, ShieldCheck } from 'lucide-react';
 import { MOCK_GAMES } from '../data/mockGames';
 import { GameCard } from '../components/game/GameCard';
 import { PageContainer } from '../components/layout/PageContainer';
-import { Badge } from '../components/ui/Badge';
+import { UpcomingPreordersSection } from '../components/home/UpcomingPreordersSection';
 
 export const PreOrdersPage: React.FC = () => {
   const preOrderGames = MOCK_GAMES.filter((g) => g.isPreOrder || g.releaseDate >= '2026-06-01');
 
   return (
-    <PageContainer>
-      <div className="mb-8 space-y-2">
-        <div className="flex items-center gap-2">
-          <Badge variant="cyan" dot>Anticipated Hits</Badge>
-          <span className="text-xs text-slate-400">• Guaranteed Day-One Key Delivery</span>
+    <PageContainer className="space-y-12 pb-20 select-none">
+      {/* Header Banner */}
+      <div className="hud-bracket-container relative rounded-2xl overflow-hidden border border-cyber-cyan/40 bg-gradient-to-r from-dark-obsidian via-[#071324] to-dark-obsidian p-6 sm:p-12 shadow-[0_0_35px_rgba(0,240,255,0.2)]">
+        <div className="max-w-2xl space-y-3 relative z-10">
+          <div className="flex items-center gap-2 font-mono text-xs text-cyber-cyan">
+            <Clock className="w-3.5 h-3.5" />
+            <span>DAY-ONE LAUNCH VAULT // AUTOMATED PRICE REFUND GUARANTEE</span>
+          </div>
+          <h1 className="font-syne text-3xl sm:text-5xl font-black text-white tracking-widest2 uppercase">
+            UPCOMING GAMES & PRE-ORDERS
+          </h1>
+          <p className="text-sm text-cyber-silver leading-relaxed font-sans">
+            Reserve future gaming masterworks ahead of time. Receive immediate closed alpha/beta keys, pre-load downloads, and guaranteed digital code delivery on launch minute.
+          </p>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white">Upcoming Pre-Orders</h1>
-        <p className="text-sm text-slate-400 max-w-2xl">
-          Reserve future gaming masterpieces ahead of time. Receive immediate beta keys and exclusive digital collector perks.
-        </p>
       </div>
+
+      {/* Featured Upcoming Section with Countdown */}
+      <UpcomingPreordersSection />
 
       {/* Pre-Order Guarantee Banner */}
-      <div className="bg-dark-card border border-dark-border rounded-xl p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="hud-bracket-container bg-dark-obsidian/90 border border-cyber-cyan/30 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-hud backdrop-blur-xl">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
-            <Gift className="w-6 h-6" />
+          <div className="w-14 h-14 rounded-2xl bg-cyber-cyan/15 border border-cyber-cyan/30 flex items-center justify-center text-cyber-cyan shrink-0 shadow-[0_0_20px_rgba(0,240,255,0.3)]">
+            <Gift className="w-7 h-7" />
           </div>
-          <div>
-            <h3 className="text-base font-bold text-white">Pre-Order Price Guarantee</h3>
-            <p className="text-xs text-slate-400">If the price drops before release day, you are automatically refunded the difference.</p>
+          <div className="space-y-1">
+            <h3 className="font-syne text-lg font-bold text-white uppercase tracking-wider">Lowest Price Pre-Order Guarantee</h3>
+            <p className="text-xs sm:text-sm text-cyber-silver max-w-xl font-sans">
+              If publisher prices decrease at any time before launch day, the price difference will be credited automatically to your gamer wallet without any manual intervention.
+            </p>
           </div>
         </div>
-        <Badge variant="cyan">Zero Risk Guarantee</Badge>
+        <div className="flex items-center gap-2 font-mono text-xs font-bold text-cyber-cyan bg-cyber-cyan/15 border border-cyber-cyan/40 px-4 py-2 rounded-xl shrink-0">
+          <ShieldCheck className="w-4 h-4 text-cyber-cyan" /> ZERO RISK POLICY
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {preOrderGames.map((game) => (
-          <GameCard key={game.id} game={game} />
-        ))}
+      {/* All upcoming game cards */}
+      <div className="space-y-6">
+        <div className="border-b border-white/10 pb-4">
+          <span className="font-mono text-xs uppercase tracking-widest text-cyber-cyan block mb-1">
+            // CALENDAR MANIFEST
+          </span>
+          <h3 className="font-syne text-2xl font-black text-white uppercase tracking-wider">FULL PRE-ORDER ROSTER</h3>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {preOrderGames.map((game) => (
+            <GameCard key={game.id} game={game} />
+          ))}
+        </div>
       </div>
     </PageContainer>
   );
